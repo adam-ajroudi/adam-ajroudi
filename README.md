@@ -1,7 +1,6 @@
-# Add this before git push
-- name: Pull latest changes
-  run: git pull --rebase origin main
+### 🛠️ Featured Projects
+![Anchor Project](./profile/pin-anchor.svg)
+![LegacyQuest](./profile/pin-legacy.svg)
 
-# Then your push command
-- name: Push changes
-  run: git push
+### 💻 Technical Skills
+![Top Languages](./profile/top-langs.svg)
