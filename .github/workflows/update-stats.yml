@@ -5,6 +5,11 @@ on:
     - cron: "0 0 * * *" # Runs daily at midnight
   workflow_dispatch:     # Allows you to run it manually
 
+# Prevent overlapping runs from racing each other
+concurrency:
+  group: update-readme-cards-main
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,6 +18,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # Fetches all history for all branches and tags
 
       - name: Generate top languages card
         uses: readme-tools/github-readme-stats-action@v1
@@ -40,8 +47,16 @@ jobs:
 
       - name: Commit cards
         run: |
+          set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
           git add profile/*.svg
-          git commit -m "Focus on projects over stats" || exit 0
-          git push
+          git commit -m "Update README cards" || exit 0
+          
+          # Integrate remote changes before pushing
+          git fetch origin main
+          git rebase origin/main
+          
+          # Push with a retry logic if a race condition occurs
+          git push origin HEAD:main || (git fetch origin main && git rebase origin/main && git push origin HEAD:main)
