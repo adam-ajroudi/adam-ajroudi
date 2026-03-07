@@ -1,4 +1,17 @@
-steps:
+name: Update README cards
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Runs daily at midnight
+  workflow_dispatch:     # Allows you to run it manually
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
       - uses: actions/checkout@v6
 
       - name: Generate top languages card
@@ -13,7 +26,6 @@ steps:
         uses: readme-tools/github-readme-stats-action@v1
         with:
           card: pin
-          # Replace 'Anchor' with the exact name of your repository
           options: username=${{ github.repository_owner }}&repo=Anchor&theme=radical
           path: profile/pin-anchor.svg
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -22,7 +34,6 @@ steps:
         uses: readme-tools/github-readme-stats-action@v1
         with:
           card: pin
-          # Replace 'LegacyQuest' with the exact name of your repository
           options: username=${{ github.repository_owner }}&repo=LegacyQuest&theme=radical
           path: profile/pin-legacy.svg
           token: ${{ secrets.GITHUB_TOKEN }}
